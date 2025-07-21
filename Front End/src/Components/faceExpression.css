@@ -1,33 +1,148 @@
-.user-video-feed{
-    width : 20rem;
-    aspect-ratio: 16/9;
-    border-radius: 1rem;
-    object-fit: cover;
+:root {
+  --primary: #58bbe6;
+  --accent: #0097ef;
+  --bg: #2a3576;
+  --shadow: 0 4px 32px rgba(51,25,84,0.07);
+  --blur: blur(12px);
 }
 
-.mood-element{
-    width: 100%;
-    display : flex ;
-    align-items: center;
-    gap : 1rem ;
- justify-content: flex-start;
-padding: 4rem;
+body {
+  font-family: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+}
+
+.mood-element {
+  width: 100%;
+  min-height: 50vh;
+  display: flex;
+  align-items: start;
+  gap: 2.5rem;
+  justify-content: start;
+  padding: 5rem 2rem;
+  position: relative;
+  background: rgba(24, 207, 253, 0.647);
+  box-shadow: var(--shadow);
+  
+  backdrop-filter: var(--blur);
+  animation: fadeInUp 0.7s both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(60px);}
+  to { opacity: 1; transform: none;}
+}
+
+.user-video-feed {
+  width: 24rem;
+  aspect-ratio: 16/9;
+  border-radius: 1.2rem;
+  object-fit: cover;
+  background: #e2defa;
+  box-shadow: 0 2px 18px rgba(80,44,180,0.11);
+  border: 4px solid rgba(147,8,190,0.06);
+  animation: fadeIn 1s;
+  transition: box-shadow 0.3s;
+}
+.user-video-feed:hover {
+  box-shadow: 0 8px 32px rgba(104,44,180,0.18);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; scale: 0.96; }
+  to   { opacity: 1; scale: 1;}
 }
 
 .mood-element button {
-    padding :0.7rem 1rem  ;
-    border-radius: 0.5rem;
-    border : none ;
-    background-color: #9308be;
-    color: aliceblue;
-
+  
+  padding: 0.9rem 2.2rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: #2a3576;
+  color: #fff;
+  font-size: 1.06rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 24px rgba(150,8,190,0.12);
+  cursor: pointer;
+  margin-left: 1.5rem;
+  transition: background 0.18s, transform 0.18s, box-shadow 0.28s;
+  outline: none;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
 }
 
-.mood-element div {
-   position: absolute;
-   left : 520px ;
-   top : 118px;
-  background-color: rgba(0, 0, 0, 0.447);
-  padding: 6px;
-  border-radius: 6px;
+.mood-element button::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 0; height: 0;
+  background: rgba(255,255,255,0.16);
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+  z-index: 0;
+}
+
+.mood-element button:active {
+  transform: scale(0.98);
+}
+.mood-element button:hover {
+  background: linear-gradient(90deg,var(--accent),var(--primary));
+  box-shadow: 0 4px 32px rgba(127,48,190,0.16);
+}
+.mood-element button:focus {
+  border: 2px solid var(--accent);
+}
+
+/* Mood display with glass + animation */
+.mood {
+  position: absolute;
+  left: 31vw;
+  min-width: 3rem;
+  top: 30vh;
+  z-index: 10;
+  color: #fff;
+  background: rgba(36, 14, 63, 0.62);
+  box-shadow: 0 3px 21px rgba(111,30,175,0.11);
+  padding: 8px 6px;
+  border-radius: 1rem;
+  font-size: 1.44rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  animation: moodSplash 0.9s both;
+}
+
+@keyframes moodSplash {
+  0%   { opacity: 0; scale: 0.7; }
+  64%  { scale: 1.1;}
+  100% { opacity: 1; scale: 1;}
+}
+
+/* For mobile screens */
+@media (max-width: 900px) {
+  .mood-element {
+    flex-direction: column;
+    align-items: center;
+    min-height: 50vh;
+    gap: 2rem;
+    padding: 2rem 0.2rem 2rem 0.2rem;
+  }
+  .user-video-feed {
+    width: 90vw;
+    min-width: unset;
+    max-width: 100%;
+  }
+  .mood {
+    position: static;
+    left: unset; top: unset;
+    min-width: 6rem;
+    margin-top: 1.3rem;
+    font-size: 1.1rem;
+    padding: 0.6rem 1.2rem;
+  }
 }
