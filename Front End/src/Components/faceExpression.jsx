@@ -1,17 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
-import './FaceExpression.css'
-const MoodDetector = () => {
+import './FaceExpression.css';
+import axios from 'axios';
+
+export default function MoodDetector({ setSongs }) {
   const videoRef = useRef(null);
+  const streamRef = useRef(null); 
   const [mood, setMood] = useState('');
   const [confidence, setConfidence] = useState('');
 
   useEffect(() => {
-    // Load face-api models
     const loadModels = async () => {
       await Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models')
+        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
       ]);
       startVideo();
     };
@@ -20,16 +22,23 @@ const MoodDetector = () => {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
           if (videoRef.current) videoRef.current.srcObject = stream;
+          streamRef.current = stream; // Save for cleanup
         })
-        .catch(err => {
+        .catch(() => {
           alert('Camera access failed!');
         });
     };
 
     loadModels();
+
+    // Clean up video stream on unmount
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
   }, []);
 
-  // This runs ONCE when you click the button
   const detectMoodOnce = async () => {
     if (!videoRef.current) return;
     const detection = await faceapi
@@ -38,10 +47,12 @@ const MoodDetector = () => {
         new faceapi.TinyFaceDetectorOptions()
       )
       .withFaceExpressions();
+    
+    let dominant = '';
     if (detection?.expressions) {
       const expressions = detection.expressions;
       const maxValue = Math.max(...Object.values(expressions));
-      const dominant = Object.keys(expressions).find(
+      dominant = Object.keys(expressions).find(
         k => expressions[k] === maxValue
       );
       setMood(dominant);
@@ -49,6 +60,14 @@ const MoodDetector = () => {
     } else {
       setMood('No face detected');
       setConfidence('');
+    }
+
+    if (dominant) {
+      axios.get(`http://localhost:3000/songs?mood=${dominant}`)
+        .then(response => {
+          console.log(response.data);
+          setSongs(response.data.songs);
+        });
     }
   };
 
@@ -62,15 +81,13 @@ const MoodDetector = () => {
       />
       <button onClick={detectMoodOnce}>Detect Mood</button>
       {mood && (
-        <div style={{ marginTop: 20  }}>
-          <b>{mood}</b>{' '}
-          {confidence && `(${confidence}% confidence)`}
+        <div className='mood' style={{ marginTop: 20 }}>
+          <b>{mood}</b>
         </div>
       )}
     </div>
   );
-};
+}
 
-export default MoodDetector;
 
 

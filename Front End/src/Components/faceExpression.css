@@ -22,3 +22,12 @@ padding: 4rem;
     color: aliceblue;
 
 }
+
+.mood-element div {
+   position: absolute;
+   left : 520px ;
+   top : 118px;
+  background-color: rgba(0, 0, 0, 0.447);
+  padding: 6px;
+  border-radius: 6px;
+}

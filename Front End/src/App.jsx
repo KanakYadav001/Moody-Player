@@ -5,10 +5,13 @@ import MoodSongs from './Components/MoodSongs'
 
 function App() {
 
+    const [Songs,setSongs] = useState([
+    
+      ])
   return (
     <>
-    <MoodDetector/>
-    <MoodSongs/>
+    <MoodDetector setSongs={setSongs}/>
+    <MoodSongs Songs={Songs}  />
     </>
   )
 }

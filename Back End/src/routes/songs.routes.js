@@ -25,6 +25,16 @@ const song = await songModel.create({
     })
 })
  
+router.get('/songs',async(req,res)=>{
+    const {mood} = req.query ;
 
+    const songs = await songModel.find({
+        mood:mood
+    })
+    res.status(200).json({
+        message : "Songs fetched Sucessfully",
+        songs
+    })
+})
 
 module.exports = router ;
